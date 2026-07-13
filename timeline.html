@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Turing to Transformers — An Interactive History of AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F4EE;
+    --ink:#1B2733;
+    --ink-soft:#4A5865;
+    --line:#D8D3C6;
+    /* era colors */
+    --c-found:#8C6A3F;   /* archival sepia — foundations */
+    --c-symb:#2456A6;    /* research blue — symbolic era */
+    --c-winter:#7FA8C9;  /* frost */
+    --c-expert:#2E7D5B;  /* expert-systems green */
+    --c-ml:#6B4FA1;      /* statistical ML purple */
+    --c-deep:#D96B1F;    /* GPU-hot orange */
+    --c-gen:#B7284B;     /* generative crimson */
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    line-height:1.55;
+    background-image:linear-gradient(var(--line) 1px, transparent 1px),linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:48px 48px;
+    background-attachment:fixed;
+  }
+  /* soften grid */
+  body::before{content:"";position:fixed;inset:0;background:var(--paper);opacity:.82;pointer-events:none;z-index:-1}
+
+  header{max-width:1060px;margin:0 auto;padding:64px 24px 28px;text-align:left}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft)}
+  h1{font-family:'IBM Plex Serif',serif;font-weight:700;font-size:clamp(2rem,5vw,3.3rem);line-height:1.1;margin:.4rem 0 .8rem;max-width:20ch}
+  h1 .accent{color:var(--c-deep)}
+  .lede{max-width:62ch;color:var(--ink-soft);font-size:1.02rem}
+  .byline{font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--ink-soft);margin-top:14px}
+
+  /* era legend + filters */
+  .legend{max-width:1060px;margin:22px auto 8px;padding:0 24px;display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.04em;
+    border:1.5px solid var(--chipc,var(--ink));color:var(--chipc,var(--ink));
+    background:transparent;border-radius:999px;padding:6px 14px;cursor:pointer;
+    transition:background .15s,color .15s;
+  }
+  .chip:hover{background:color-mix(in srgb,var(--chipc) 12%,transparent)}
+  .chip.active{background:var(--chipc,var(--ink));color:#fff}
+  .chip:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+
+  /* timeline */
+  .timeline{max-width:1060px;margin:34px auto 60px;padding:0 24px;position:relative}
+  .spine{position:absolute;left:50%;top:0;bottom:0;width:6px;transform:translateX(-50%);border-radius:3px;
+    background:linear-gradient(to bottom,
+      var(--c-found) 0%, var(--c-symb) 12%,
+      var(--c-winter) 24%, var(--c-winter) 30%,
+      var(--c-expert) 36%,
+      var(--c-winter) 46%, var(--c-winter) 52%,
+      var(--c-ml) 62%, var(--c-deep) 78%, var(--c-gen) 100%);
+  }
+
+  .era-band{position:relative;text-align:center;margin:54px 0 10px;z-index:2}
+  .era-band span{
+    display:inline-block;background:var(--paper);border:1.5px solid var(--ec);color:var(--ec);
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+    padding:7px 18px;border-radius:999px;
+  }
+  .era-band.winter span{background:#E9F1F7;border-style:dashed}
+
+  .event{position:relative;width:calc(50% - 40px);margin:26px 0;z-index:2}
+  .event.left{margin-right:auto}
+  .event.right{margin-left:auto}
+  .event .dot{
+    position:absolute;top:20px;width:16px;height:16px;border-radius:50%;
+    background:var(--ec);border:3.5px solid var(--paper);box-shadow:0 0 0 2px var(--ec);
+  }
+  .event.left .dot{right:-49px}
+  .event.right .dot{left:-49px}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-left:5px solid var(--ec);
+    border-radius:10px;padding:16px 18px;cursor:pointer;
+    box-shadow:0 1px 3px rgba(27,39,51,.07);
+    transition:transform .18s,box-shadow .18s,opacity .4s,translate .5s;
+  }
+  .card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(27,39,51,.12)}
+  .card:focus-visible{outline:3px solid var(--ec);outline-offset:3px}
+  .yr{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.82rem;color:var(--ec);letter-spacing:.06em}
+  .card h3{font-family:'IBM Plex Serif',serif;font-size:1.08rem;font-weight:600;margin:.2rem 0 .3rem}
+  .card p.sum{font-size:.9rem;color:var(--ink-soft)}
+  .who{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-soft);margin-top:.55rem;letter-spacing:.03em}
+  .who b{color:var(--ec);font-weight:600}
+  .detail{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:.88rem;color:var(--ink)}
+  .card.open .detail{max-height:340px;margin-top:.6rem;padding-top:.6rem;border-top:1px dashed var(--line)}
+  .hint{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--ink-soft);margin-top:.5rem;opacity:.7}
+  .card.open .hint{display:none}
+
+  /* winter cards frost treatment */
+  .event.winter .card{background:linear-gradient(180deg,#F2F7FB,#E9F1F7);border-left-style:dashed}
+  .event.winter .card h3::before{content:"❄ ";color:var(--c-winter)}
+
+  /* reveal animation */
+  .event{opacity:0;translate:0 18px}
+  .event.show{opacity:1;translate:0 0}
+
+  .hiddenf{display:none!important}
+
+  footer{max-width:1060px;margin:0 auto;padding:20px 24px 70px;color:var(--ink-soft);font-size:.8rem}
+  footer .src{font-family:'IBM Plex Mono',monospace;font-size:.72rem;line-height:1.9}
+
+  @media (max-width:760px){
+    .spine{left:14px}
+    .event{width:auto;margin-left:44px!important;margin-right:0!important}
+    .event .dot{left:-38px!important;right:auto!important}
+    .era-band{text-align:left;padding-left:44px}
+    header{padding-top:44px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .event{opacity:1;translate:none;transition:none}
+    .card{transition:none}
+  }
+</style>
+</head>
+<body>
+<div style="position:sticky;top:0;z-index:60;background:#14202E;box-shadow:0 2px 0 #B7284B">
+  <div style="max-width:1060px;margin:0 auto;padding:11px 24px;display:flex;gap:18px;align-items:center">
+    <a href="index.html" style="font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#F6F4EE;text-decoration:none">← Siri Anubolu — Portfolio</a>
+  </div>
+</div>
+
+<header>
+  <div class="eyebrow">AIML-500 · Discussion — Evolution of Artificial Intelligence</div>
+  <h1>From Turing to Transformers: <span class="accent">75 Years of AI</span></h1>
+  <p class="lede">An interactive timeline tracing artificial intelligence from its 1950s foundations through two AI winters to the deep-learning and generative-AI era — highlighting the people, companies, and hardware breakthroughs that shaped the field. <strong>Tap any card to expand the full story.</strong></p>
+  <p class="byline">Created by Siri Anubolu · Indiana Wesleyan University</p>
+</header>
+
+<nav class="legend" aria-label="Filter timeline by era">
+  <button class="chip active" data-f="all" style="--chipc:var(--ink)">All eras</button>
+  <button class="chip" data-f="found" style="--chipc:var(--c-found)">Foundations</button>
+  <button class="chip" data-f="symb" style="--chipc:var(--c-symb)">Symbolic AI</button>
+  <button class="chip" data-f="winter" style="--chipc:var(--c-winter)">AI Winters</button>
+  <button class="chip" data-f="expert" style="--chipc:var(--c-expert)">Expert Systems</button>
+  <button class="chip" data-f="ml" style="--chipc:var(--c-ml)">Machine Learning</button>
+  <button class="chip" data-f="deep" style="--chipc:var(--c-deep)">Deep Learning</button>
+  <button class="chip" data-f="gen" style="--chipc:var(--c-gen)">Generative AI</button>
+</nav>
+
+<main class="timeline" id="tl">
+  <div class="spine" aria-hidden="true"></div>
+</main>
+
+<footer>
+  <p><strong>Sources:</strong></p>
+  <p class="src">
+    IEEE Computer Society — The Evolution of AI: From Foundations to Future Prospects<br>
+    Our World in Data — A Brief History of Artificial Intelligence (Roser et al.)<br>
+    Putchuon (2024) — The Entire History of Artificial Intelligence [YouTube]<br>
+    Russell &amp; Norvig — Artificial Intelligence: A Modern Approach (historical chapters)
+  </p>
+</footer>
+
+<script>
+const ERAS = {
+  found:{label:"Foundations · 1943–1955", color:"var(--c-found)"},
+  symb:{label:"Symbolic AI & the Golden Age · 1956–1973", color:"var(--c-symb)"},
+  winter1:{label:"First AI Winter · 1974–1980", color:"var(--c-winter)", winter:true, key:"winter"},
+  expert:{label:"Expert Systems Boom · 1980–1987", color:"var(--c-expert)"},
+  winter2:{label:"Second AI Winter · 1987–1993", color:"var(--c-winter)", winter:true, key:"winter"},
+  ml:{label:"Statistical Machine Learning · 1993–2011", color:"var(--c-ml)"},
+  deep:{label:"Deep Learning Revolution · 2012–2019", color:"var(--c-deep)"},
+  gen:{label:"Generative AI Era · 2020–Present", color:"var(--c-gen)"}
+};
+
+const EVENTS = [
+ {era:"found", yr:"1943", t:"The First Artificial Neuron", who:"Warren McCulloch · Walter Pitts",
+  s:"A mathematical model of a brain neuron proves networks of simple units can compute logic.",
+  d:"McCulloch and Pitts showed that simplified neurons wired together could, in principle, compute any logical function. This paper planted the seed of 'connectionism' — the neural-network approach that would lie dormant for decades before powering today's AI."},
+ {era:"found", yr:"1950", t:"Turing Asks: Can Machines Think?", who:"Alan Turing",
+  s:"'Computing Machinery and Intelligence' proposes the Imitation Game — the Turing Test.",
+  d:"Turing sidestepped philosophy by proposing a practical benchmark: if a machine's conversation is indistinguishable from a human's, we should call it intelligent. His WWII code-breaking work had already proven machines could outperform humans on tasks once thought to require thought."},
+ {era:"symb", yr:"1956", t:"Dartmouth Conference — 'AI' Is Born", who:"John McCarthy · Marvin Minsky · Claude Shannon",
+  s:"McCarthy coins the term 'artificial intelligence' at a summer workshop, launching the field.",
+  d:"The Dartmouth Summer Research Project proposed that 'every aspect of learning… can in principle be so precisely described that a machine can be made to simulate it.' It kicked off the Symbolic AI era: intelligence as hand-coded rules and logic, funded generously by DARPA."},
+ {era:"symb", yr:"1957", t:"The Perceptron", who:"Frank Rosenblatt · Cornell / U.S. Navy",
+  s:"The first trainable neural network learns to classify images, sparking huge media hype.",
+  d:"Rosenblatt's Perceptron adjusted its own weights from examples — genuine machine learning. The New York Times predicted machines that would 'walk, talk, see, and write.' The overpromising set the stage for later disillusionment."},
+ {era:"symb", yr:"1966", t:"ELIZA — The First Chatbot", who:"Joseph Weizenbaum · MIT",
+  s:"A simple pattern-matching program mimics a psychotherapist and fools users into confiding in it.",
+  d:"ELIZA had no understanding at all — it reflected users' words back as questions. Yet people attributed empathy to it, a phenomenon now called the 'ELIZA effect.' It foreshadowed both the promise and the perception problems of conversational AI."},
+ {era:"symb", yr:"1969", t:"'Perceptrons' Freezes Neural Nets", who:"Marvin Minsky · Seymour Papert",
+  s:"A rigorous book exposes the limits of single-layer networks; neural-net funding evaporates.",
+  d:"Minsky and Papert proved single-layer perceptrons couldn't solve simple problems like XOR. Multi-layer networks could — but nobody knew how to train them yet. Research money flowed to symbolic AI instead, sidelining neural nets for nearly two decades."},
+ {era:"winter1", yr:"1973–74", t:"FIRST AI WINTER BEGINS", who:"Lighthill Report (UK) · DARPA cuts (US)", winter:true,
+  s:"Governments slash funding after AI fails to deliver on grand promises.",
+  d:"CAUSES: researchers had promised human-level translation and reasoning, but computers of the era lacked the memory and compute ('combinatorial explosion'), and real-world knowledge proved impossible to hand-code. The UK's Lighthill Report declared AI a failure; DARPA redirected funds. IMPACT: labs shrank, the term 'AI' became toxic on grant applications, and progress stalled for ~6 years."},
+ {era:"expert", yr:"1980", t:"Expert Systems Go Commercial", who:"XCON at Digital Equipment Corp.",
+  s:"Rule-based 'expert systems' save corporations millions, reigniting an AI boom.",
+  d:"XCON encoded human experts' knowledge as thousands of IF-THEN rules to configure computer orders, saving DEC an estimated $40M/year. By the mid-80s, two-thirds of Fortune 500 companies ran expert systems, and a billion-dollar industry of specialized LISP machines emerged."},
+ {era:"expert", yr:"1982", t:"Japan's Fifth Generation Project", who:"Japanese Ministry of Trade (MITI)",
+  s:"Japan bets $400M on intelligent computers, triggering panic funding in the US and UK.",
+  d:"Japan's moonshot to build reasoning machines spurred competitive responses (the US MCC consortium, the UK's Alvey Programme). The project ultimately failed to meet its goals — but the international rivalry pattern would repeat in the 2020s AI race."},
+ {era:"expert", yr:"1986", t:"Backpropagation Revives Neural Nets", who:"Rumelhart · Hinton · Williams",
+  s:"A practical algorithm to train multi-layer networks solves the problem Minsky exposed.",
+  d:"Backpropagation propagates errors backward through network layers, letting deep networks learn. Geoffrey Hinton's popularization of it quietly rebuilt connectionism — though computers were still too slow to exploit it fully. The theory was ready 25 years before the hardware."},
+ {era:"winter2", yr:"1987–93", t:"SECOND AI WINTER", who:"LISP machine market collapse", winter:true,
+  s:"The expert-systems bubble bursts; specialized AI hardware becomes obsolete overnight.",
+  d:"CAUSES: expert systems proved brittle (they failed at anything outside their rules) and cripplingly expensive to maintain; cheap desktop PCs from Apple and IBM destroyed the $1B LISP machine industry; Japan's Fifth Generation project fizzled. IMPACT: 300+ AI companies folded, DARPA cut funding again, and researchers rebranded their work as 'informatics' or 'machine learning' to avoid the AI stigma."},
+ {era:"ml", yr:"1997", t:"Deep Blue Defeats Kasparov", who:"IBM",
+  s:"A machine beats the world chess champion for the first time — a global cultural moment.",
+  d:"Deep Blue evaluated 200 million positions per second using brute-force search plus hand-tuned heuristics — symbolic AI's greatest triumph. It proved specialized 'Narrow AI' could surpass humans in bounded domains, while general intelligence remained distant."},
+ {era:"ml", yr:"2006", t:"Deep Learning + The Cloud Arrive Together", who:"Geoffrey Hinton · Amazon Web Services",
+  s:"Hinton coins 'deep learning'; AWS launches, making massive compute rentable by anyone.",
+  d:"Two quiet revolutions in one year: Hinton's deep belief networks showed deep architectures could be trained layer by layer, and Amazon's EC2/S3 launch meant startups no longer needed to own supercomputers. Cloud computing would become the delivery mechanism for the entire AI boom."},
+ {era:"ml", yr:"2009", t:"ImageNet: Big Data Meets AI", who:"Fei-Fei Li · Stanford",
+  s:"A 14-million-image labeled dataset gives neural networks something big enough to learn from.",
+  d:"Li's insight was that algorithms weren't the bottleneck — data was. ImageNet's annual competition became the proving ground where deep learning would announce itself. It established the modern recipe: big data + big compute + neural networks."},
+ {era:"ml", yr:"2011", t:"IBM Watson Wins Jeopardy!", who:"IBM",
+  s:"Watson defeats champions Ken Jennings and Brad Rutter at open-domain question answering.",
+  d:"Watson combined natural language processing with massive parallel search across encyclopedic knowledge — televised proof that machines could handle messy human language, and a preview of enterprise AI ambitions in healthcare and finance."},
+ {era:"deep", yr:"2012", t:"AlexNet: The Big Bang of Deep Learning", who:"Krizhevsky · Sutskever · Hinton — trained on NVIDIA GPUs",
+  s:"A GPU-trained neural network crushes the ImageNet competition, halving the error rate.",
+  d:"THE pivotal moment: hardware finally caught up with 1980s theory. Gaming GPUs turned out to be perfect for neural-network math, cutting ImageNet error from 26% to 15%. Within two years every major tech company pivoted to deep learning, and NVIDIA began its transformation from gaming company to the most valuable chipmaker on Earth."},
+ {era:"deep", yr:"2014", t:"GANs + Google Buys DeepMind", who:"Ian Goodfellow · Google ($500M acquisition)",
+  s:"Generative Adversarial Networks let AI create images; Big Tech starts acquiring AI labs.",
+  d:"Goodfellow's GANs pitted two networks against each other — one generating fakes, one detecting them — enabling machines to create realistic images. Google's DeepMind acquisition signaled that AI talent had become a strategic corporate asset."},
+ {era:"deep", yr:"2016", t:"AlphaGo Defeats Lee Sedol", who:"DeepMind (Google) · Demis Hassabis",
+  s:"AI masters Go — a game with more positions than atoms in the universe — a decade early.",
+  d:"AlphaGo's famous 'Move 37' was so creative that commentators thought it was a mistake. Combining deep learning with reinforcement learning, it beat the 18-time world champion 4–1. The match, watched by 280M people, triggered China's national AI investment strategy."},
+ {era:"deep", yr:"2017", t:"'Attention Is All You Need' — The Transformer", who:"Vaswani et al. · Google Brain",
+  s:"An 8-author Google paper introduces the architecture behind every modern LLM.",
+  d:"The Transformer's attention mechanism let models process entire sequences in parallel and scale almost limitlessly with data and compute. GPT, BERT, Claude, Gemini, and Llama are all Transformers. Arguably the most consequential AI paper ever published."},
+ {era:"gen", yr:"2020", t:"GPT-3 and the Scaling Laws", who:"OpenAI",
+  s:"A 175-billion-parameter model shows that simply scaling up produces surprising new abilities.",
+  d:"GPT-3 could write essays, code, and poetry from plain-English prompts — abilities nobody explicitly programmed. OpenAI's scaling-law research showed capability grows predictably with compute, data, and parameters, turning AI progress into an infrastructure race. Per Our World in Data, training compute for frontier models was now doubling roughly every 6 months."},
+ {era:"gen", yr:"2022", t:"ChatGPT: AI Goes Mainstream", who:"OpenAI · Sam Altman",
+  s:"Fastest-adopted consumer product in history — 100 million users in two months.",
+  d:"Launched November 30, 2022, ChatGPT (GPT-3.5 with conversational fine-tuning via RLHF) made AI usable by anyone. It triggered Microsoft's $10B+ OpenAI investment, Google's 'code red,' and a global wave of enterprise adoption, regulation debates, and AI-first startups."},
+ {era:"gen", yr:"2023", t:"The Generative AI Arms Race", who:"OpenAI · Google · Anthropic · Meta",
+  s:"GPT-4, Gemini, Claude, and open-weight Llama models compete; AI becomes a boardroom priority.",
+  d:"GPT-4 passed the bar exam; Google merged Brain and DeepMind to ship Gemini; Anthropic advanced its safety-focused Claude models; Meta open-sourced Llama, democratizing access. Echoes of the 1980s Japan panic — but at 1000x the investment scale."},
+ {era:"gen", yr:"2024", t:"Nobel Prizes & Reasoning Models", who:"Hinton · Hopfield (Physics) · Hassabis · Jumper (Chemistry)",
+  s:"Deep learning wins two Nobel Prizes; new 'reasoning' models think step-by-step before answering.",
+  d:"The Nobel committee honored neural-network pioneers (Physics) and AlphaFold's protein-structure breakthrough (Chemistry) — scientific validation of the field. Meanwhile OpenAI's o1 introduced test-time reasoning, and multimodal models began seeing, hearing, and speaking."},
+ {era:"gen", yr:"2025–26", t:"The Agentic Era", who:"Industry-wide",
+  s:"AI shifts from answering questions to autonomously completing multi-step work.",
+  d:"Agentic AI systems now orchestrate tools, browse, code, and execute workflows end-to-end — the architecture pattern behind enterprise complaint management, customer service, and analytics pipelines. The open questions have shifted from 'can it?' to governance, reliability, safety, and workforce impact."}
+];
+
+const tl = document.getElementById("tl");
+let side = 0, lastEra = null;
+
+EVENTS.forEach((e,i)=>{
+  const eraDef = ERAS[e.era] || (e.era==="winter1"?ERAS.winter1:ERAS.winter2);
+  const eraKey = e.winter ? (e.yr.startsWith("1973")?"winter1":"winter2") : e.era;
+  const def = ERAS[eraKey];
+  if(eraKey !== lastEra){
+    const band = document.createElement("div");
+    band.className = "era-band" + (def.winter?" winter":"");
+    band.style.setProperty("--ec", def.color);
+    band.dataset.era = def.key || eraKey;
+    band.innerHTML = `<span>${def.label}</span>`;
+    tl.appendChild(band);
+    lastEra = eraKey;
+  }
+  const ev = document.createElement("div");
+  ev.className = "event " + (side++%2===0?"left":"right") + (def.winter?" winter":"");
+  ev.dataset.era = def.key || eraKey;
+  ev.style.setProperty("--ec", def.color);
+  ev.innerHTML = `
+    <span class="dot" aria-hidden="true"></span>
+    <div class="card" tabindex="0" role="button" aria-expanded="false">
+      <div class="yr">${e.yr}</div>
+      <h3>${e.t}</h3>
+      <p class="sum">${e.s}</p>
+      <div class="detail">${e.d}</div>
+      <div class="who"><b>KEY PLAYERS:</b> ${e.who}</div>
+      <div class="hint">▸ tap to expand</div>
+    </div>`;
+  tl.appendChild(ev);
+});
+
+/* expand/collapse */
+tl.addEventListener("click", ev=>{
+  const c = ev.target.closest(".card");
+  if(!c) return;
+  c.classList.toggle("open");
+  c.setAttribute("aria-expanded", c.classList.contains("open"));
+});
+tl.addEventListener("keydown", ev=>{
+  if((ev.key==="Enter"||ev.key===" ") && ev.target.classList.contains("card")){
+    ev.preventDefault(); ev.target.click();
+  }
+});
+
+/* filters */
+document.querySelectorAll(".chip").forEach(ch=>{
+  ch.addEventListener("click", ()=>{
+    document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
+    ch.classList.add("active");
+    const f = ch.dataset.f;
+    document.querySelectorAll(".event,.era-band").forEach(el=>{
+      el.classList.toggle("hiddenf", f!=="all" && el.dataset.era!==f);
+    });
+  });
+});
+
+/* scroll reveal */
+const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if(reduce){
+  document.querySelectorAll(".event").forEach(e=>e.classList.add("show"));
+}else{
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add("show"); io.unobserve(en.target);} });
+  },{threshold:.15});
+  document.querySelectorAll(".event").forEach(e=>io.observe(e));
+}
+</script>
+</body>
+</html>

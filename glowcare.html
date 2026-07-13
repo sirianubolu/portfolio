@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlowCare Complaint Care Assistant — Prompt-Engineered Chatbot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F4EE;
+    --ink:#14202E;
+    --ink-2:#1B2733;
+    --ink-soft:#4A5865;
+    --line:#D8D3C6;
+    --crimson:#B7284B;
+    --blush:#F3E3E7;
+    --green:#2E7D5B;
+    --blue:#2456A6;
+    --orange:#D96B1F;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);color:var(--ink-2);
+    font-family:'IBM Plex Sans',system-ui,sans-serif;line-height:1.55;
+    background-image:linear-gradient(var(--line) 1px, transparent 1px),linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:48px 48px;background-attachment:fixed;
+  }
+  body::before{content:"";position:fixed;inset:0;background:var(--paper);opacity:.85;pointer-events:none;z-index:-1}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+
+  header{padding:56px 0 10px}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+  .eyebrow b{color:var(--crimson)}
+  h1{font-family:'IBM Plex Serif',serif;font-weight:700;font-size:clamp(1.9rem,5vw,3rem);line-height:1.08;margin:.4rem 0 .7rem;max-width:22ch}
+  h1 .accent{color:var(--crimson)}
+  .lede{max-width:64ch;color:var(--ink-soft);font-size:1.02rem}
+  .lede b{color:var(--ink-2)}
+  .meta-chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px}
+  .chip{font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.06em;border:1.5px solid var(--line);border-radius:999px;padding:6px 13px;background:var(--card)}
+  .chip.hot{border-color:var(--crimson);color:var(--crimson);font-weight:500}
+
+  h2{font-family:'IBM Plex Serif',serif;font-size:1.45rem;font-weight:700;margin-bottom:4px}
+  .sec-sub{color:var(--ink-soft);max-width:66ch;margin-bottom:20px;font-size:.93rem}
+  section{padding:30px 0 8px}
+
+  /* context / challenge / solution */
+  .ccs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media (max-width:820px){.ccs{grid-template-columns:1fr}}
+  .ccs .cell{background:var(--card);border:1.5px solid var(--ink-2);border-radius:14px;padding:18px 20px;box-shadow:5px 5px 0 rgba(20,32,46,.10)}
+  .ccs h3{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--crimson);margin-bottom:8px}
+  .ccs p{font-size:.9rem}
+
+  /* ============ DEMO ============ */
+  .demo-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:start}
+  @media (max-width:900px){.demo-grid{grid-template-columns:1fr}}
+
+  .phone{
+    background:var(--card);border:1.5px solid var(--ink-2);border-radius:18px;overflow:hidden;
+    box-shadow:6px 6px 0 rgba(183,40,75,.18);display:flex;flex-direction:column;min-height:560px;
+  }
+  .phone-top{background:var(--ink);color:var(--paper);padding:13px 18px;display:flex;align-items:center;gap:11px}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--crimson);display:grid;place-items:center;font-family:'IBM Plex Serif',serif;font-weight:700;color:#fff}
+  .phone-top .who b{font-size:.92rem;display:block;line-height:1.2}
+  .phone-top .who span{font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.1em;color:#9DB0C2;text-transform:uppercase}
+  .phone-top .dot{margin-left:auto;width:9px;height:9px;border-radius:50%;background:#4ADE80;box-shadow:0 0 0 3px rgba(74,222,128,.25)}
+
+  .chat{flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,#FBFAF6,#F6F1EE)}
+  .msg{max-width:82%;padding:10px 14px;border-radius:14px;font-size:.9rem;white-space:pre-wrap;animation:pop .22s ease}
+  .msg.bot{background:var(--blush);border:1.5px solid #E4C3CC;border-bottom-left-radius:4px;align-self:flex-start}
+  .msg.user{background:var(--ink);color:var(--paper);border-bottom-right-radius:4px;align-self:flex-end}
+  .msg.card{
+    max-width:95%;align-self:stretch;background:#101B27;color:#DCE6EE;border-radius:12px;
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;line-height:1.55;border:1.5px solid var(--crimson);
+  }
+  .msg.card .card-title{color:#fff;background:var(--crimson);margin:-10px -14px 10px;padding:7px 14px;border-radius:10px 10px 0 0;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase}
+  .msg.card .k{color:#F0A5B8}
+  .msg.card .v{color:#DCE6EE}
+  .msg.card .flag{color:#FFD27F}
+  @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .typing{display:inline-flex;gap:4px;padding:12px 14px}
+  .typing i{width:6px;height:6px;border-radius:50%;background:var(--crimson);opacity:.5;animation:blink 1s infinite}
+  .typing i:nth-child(2){animation-delay:.18s}.typing i:nth-child(3){animation-delay:.36s}
+  @keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+
+  .quick{display:flex;flex-wrap:wrap;gap:7px;padding:10px 14px;border-top:1.5px dashed var(--line);background:#FBFAF6}
+  .quick button{
+    font-family:'IBM Plex Mono',monospace;font-size:.68rem;border:1.5px solid var(--crimson);color:var(--crimson);
+    background:transparent;border-radius:999px;padding:6px 12px;cursor:pointer;transition:background .15s,color .15s;
+  }
+  .quick button:hover{background:var(--crimson);color:#fff}
+  .composer{display:flex;gap:8px;padding:12px 14px;border-top:1.5px solid var(--ink-2);background:var(--card)}
+  .composer input{
+    flex:1;font-family:'IBM Plex Sans',sans-serif;font-size:.9rem;border:1.5px solid var(--line);border-radius:9px;
+    padding:11px 13px;background:var(--paper);color:var(--ink-2);
+  }
+  .composer input:focus{outline:2.5px solid var(--crimson);outline-offset:1px;border-color:var(--crimson)}
+  .composer button{
+    font-family:'IBM Plex Mono',monospace;font-size:.78rem;background:var(--crimson);color:#fff;border:1.5px solid var(--crimson);
+    border-radius:9px;padding:0 20px;cursor:pointer;transition:transform .12s,box-shadow .12s;
+  }
+  .composer button:hover{transform:translate(-1px,-1px);box-shadow:2px 2px 0 rgba(0,0,0,.3)}
+  .composer button:focus-visible,.quick button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+  .demo-note{font-family:'IBM Plex Mono',monospace;font-size:.66rem;color:var(--ink-soft);letter-spacing:.03em;margin-top:10px;max-width:60ch}
+
+  /* right column: how it thinks */
+  .brain{display:grid;gap:14px}
+  .brain .step{
+    background:var(--card);border:1.5px solid var(--line);border-left:5px solid var(--step,var(--crimson));
+    border-radius:10px;padding:13px 16px;transition:border-color .2s, box-shadow .2s;
+  }
+  .brain .step.active{border-color:var(--step,var(--crimson));box-shadow:4px 4px 0 rgba(20,32,46,.10)}
+  .brain .step h4{font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--step,var(--crimson));margin-bottom:3px}
+  .brain .step p{font-size:.84rem;color:var(--ink-soft)}
+  .brain .step.done h4::after{content:" ✓";color:var(--green)}
+
+  /* ============ PROMPT PANEL ============ */
+  .prompt-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
+  @media (max-width:900px){.prompt-grid{grid-template-columns:1fr}}
+  .code{
+    background:#101B27;color:#DCE6EE;border:1.5px solid var(--ink-2);border-radius:14px;overflow:hidden;
+    box-shadow:5px 5px 0 rgba(20,32,46,.16);
+  }
+  .code .bar{background:#1B2733;padding:10px 16px;display:flex;gap:8px;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:#9DB0C2;letter-spacing:.1em;text-transform:uppercase}
+  .code .bar i{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .code pre{padding:18px 20px;font-family:'IBM Plex Mono',monospace;font-size:.76rem;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+  .code .h{color:#F0A5B8;font-weight:600}
+  .code .c{color:#7FA8C9;font-style:italic}
+  .anno{display:grid;gap:12px}
+  .anno .a{
+    background:var(--card);border:1.5px dashed var(--crimson);border-radius:10px;padding:12px 15px;font-size:.82rem;
+  }
+  .anno .a b{font-family:'IBM Plex Mono',monospace;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson);display:block;margin-bottom:3px}
+
+  /* pipeline strip */
+  .pipe{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:6px}
+  .pipe .node{
+    background:var(--card);border:1.5px solid var(--ink-2);border-radius:10px;padding:10px 15px;
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;box-shadow:3px 3px 0 rgba(20,32,46,.10);
+  }
+  .pipe .node b{display:block;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+  .pipe .arrow{font-family:'IBM Plex Mono',monospace;color:var(--ink-soft)}
+
+  /* skills */
+  .skill-tags{display:flex;flex-wrap:wrap;gap:8px}
+  .skill-tags span{font-size:.8rem;border:1.5px solid var(--ink-2);border-radius:999px;padding:6px 14px;background:var(--card)}
+  .skill-tags span.hot{border-color:var(--crimson);color:var(--crimson);font-weight:500}
+
+  footer{border-top:2px solid var(--ink-2);margin-top:44px;padding:22px 0 46px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    .reveal{opacity:1;transform:none;transition:none}
+    .msg{animation:none}
+    .composer button:hover{transform:none;box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<div style="position:sticky;top:0;z-index:60;background:#14202E;box-shadow:0 2px 0 #B7284B">
+  <div style="max-width:1060px;margin:0 auto;padding:11px 24px;display:flex;gap:18px;align-items:center">
+    <a href="index.html" style="font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#F6F4EE;text-decoration:none">← Siri Anubolu — Portfolio</a>
+  </div>
+</div>
+
+<header class="wrap">
+  <p class="eyebrow"><b>Portfolio artifact 02</b> · Applied AI · Prompt engineering</p>
+  <h1>GlowCare Complaint Care Assistant<span class="accent">.</span></h1>
+  <p class="lede">
+    A <b>prompt-engineered intake chatbot</b> for a direct-to-consumer cosmetics brand.
+    Where Artifact 01 explains AI, this one <b>is</b> AI at work: a single carefully constrained
+    system prompt turns a general-purpose LLM into a specialist that collects complete complaint
+    details with empathy — and hands support teams a clean, structured ticket every time.
+  </p>
+  <div class="meta-chips">
+    <span class="chip hot">AIML-500 · AI Lab</span>
+    <span class="chip">System prompt design</span>
+    <span class="chip">Chatbase deployment</span>
+    <span class="chip">HTML/JS prototype</span>
+    <span class="chip">Node/Express + Anthropic API</span>
+  </div>
+</header>
+
+<section class="wrap reveal">
+  <h2>The project, briefly</h2>
+  <p class="sec-sub">Built for the AIML-500 AI Lab "Build a Bot" activity, then extended beyond the assignment into a deployable product.</p>
+  <div class="ccs">
+    <div class="cell">
+      <h3>Context</h3>
+      <p>GlowCare is a D2C skincare &amp; makeup brand. Complaints arrive as unstructured chat — missing order numbers, vague product references, mixed emotions — forcing agents to play twenty questions before they can even open a ticket.</p>
+    </div>
+    <div class="cell">
+      <h3>Challenge</h3>
+      <p>Make one LLM reliably do one narrow job: gather <em>every</em> required field (product, order #, issue, evidence) without sounding like a form — and refuse to drift into refunds, medical advice, or off-topic chat.</p>
+    </div>
+    <div class="cell">
+      <h3>Solution</h3>
+      <p>A role-scoped system prompt with an explicit collection checklist, empathy-first response rules, safety escalation triggers, and a mandatory structured JSON summary — deployed on Chatbase and rebuilt as a key-safe Node/Express app.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap reveal" id="demo">
+  <h2>Try it — live demo</h2>
+  <p class="sec-sub">
+    This embedded demo is a <b>scripted simulation</b> of the deployed bot's conversation design, so it runs
+    anywhere with zero setup. It follows the exact same state flow the system prompt enforces in the
+    LLM-powered production version. Type a complaint, or tap a starter.
+  </p>
+
+  <div class="demo-grid">
+    <div class="phone">
+      <div class="phone-top">
+        <div class="avatar">G</div>
+        <div class="who"><b>GlowCare Care Assistant</b><span>Complaint intake · always on</span></div>
+        <span class="dot" aria-hidden="true"></span>
+      </div>
+      <div class="chat" id="chat" aria-live="polite"></div>
+      <div class="quick" id="quick">
+        <button data-q="My vitamin C serum arrived leaking everywhere">🧴 Serum arrived leaking</button>
+        <button data-q="I got a rash after using the face cream">⚠️ Rash from face cream</button>
+        <button data-q="You sent me the wrong shade of foundation">🎨 Wrong foundation shade</button>
+      </div>
+      <div class="composer">
+        <input id="inp" type="text" placeholder="Describe your issue…" aria-label="Type your message">
+        <button id="send">Send</button>
+      </div>
+    </div>
+
+    <div class="brain" id="brain">
+      <div class="step" data-step="0" style="--step:var(--crimson)">
+        <h4>1 · Empathize &amp; capture the issue</h4>
+        <p>The prompt requires acknowledging frustration <em>before</em> asking anything. Safety keywords (rash, burn, allergic) are flagged immediately.</p>
+      </div>
+      <div class="step" data-step="1" style="--step:var(--orange)">
+        <h4>2 · Identify the product</h4>
+        <p>One question at a time — the prompt forbids stacking questions, which is what makes bots feel like forms.</p>
+      </div>
+      <div class="step" data-step="2" style="--step:var(--blue)">
+        <h4>3 · Collect the order number</h4>
+        <p>Validates the GC-XXXXX pattern; politely re-asks (once) if the format looks off, then proceeds rather than blocking.</p>
+      </div>
+      <div class="step" data-step="3" style="--step:var(--green)">
+        <h4>4 · Ask for evidence</h4>
+        <p>Photos are requested, never demanded — the prompt treats them as optional and records availability either way.</p>
+      </div>
+      <div class="step" data-step="4" style="--step:#6B4FA1">
+        <h4>5 · Structured summary &amp; routing</h4>
+        <p>Every conversation ends in the same machine-readable JSON: category, priority, and an escalation flag downstream systems can route on.</p>
+      </div>
+    </div>
+  </div>
+  <p class="demo-note">// Production versions: Chatbase-hosted agent (public link) and a Node/Express build that proxies the Anthropic API server-side so the key never reaches the browser.</p>
+</section>
+
+<section class="wrap reveal">
+  <h2>The system prompt, annotated</h2>
+  <p class="sec-sub">The entire "application logic" lives in natural language. Every behavior in the demo above traces to a line below.</p>
+  <div class="prompt-grid">
+    <div class="code">
+      <div class="bar"><i style="background:#B7284B"></i><i style="background:#D96B1F"></i><i style="background:#2E7D5B"></i>&nbsp;system_prompt.txt</div>
+      <pre><span class="h">ROLE:</span> You are the Complaint Care Assistant for GlowCare,
+a direct-to-consumer cosmetics brand (skincare and makeup).
+Your only job is to collect complete product complaint
+details empathetically and produce a structured summary.
+
+<span class="h">TONE:</span> Warm, professional, concise. Always acknowledge
+the customer's frustration before asking for information.
+Ask exactly ONE question per message.
+
+<span class="h">COLLECT (in order):</span>
+1. What happened (the complaint itself)
+2. Product name / shade / size
+3. Order number (format GC-XXXXX; if it doesn't match,
+   ask once more, then continue without blocking)
+4. When the issue was noticed
+5. Whether the customer can share a photo (optional)
+
+<span class="h">SAFETY:</span> If the customer mentions a skin reaction,
+rash, burning, or allergy — flag priority HIGH, advise
+discontinuing use, and mark the case for escalation to
+the Product Safety team. <span class="c">Never give medical advice.</span>
+
+<span class="h">GUARDRAILS:</span> Do not promise refunds, replacements, or
+timelines. Do not discuss topics outside complaint intake.
+If asked, explain a specialist will follow up within
+2 business days.
+
+<span class="h">OUTPUT:</span> When all fields are gathered, thank the customer
+and emit a JSON summary: {category, product, order_id,
+description, reported_when, photo_available, priority,
+escalate, sentiment}.</pre>
+    </div>
+    <div class="anno">
+      <div class="a"><b>Role scoping</b>"Your only job" — the single most effective jailbreak- and drift-resistance line. The bot declines everything outside intake.</div>
+      <div class="a"><b>Interaction contract</b>One question per message keeps completion rates high; empathy-first ordering is a rule, not a vibe.</div>
+      <div class="a"><b>Graceful validation</b>Re-ask once, then proceed — availability beats perfection in intake flows.</div>
+      <div class="a"><b>Safety &amp; escalation</b>Deterministic triggers for health-related complaints, with an explicit "no medical advice" boundary.</div>
+      <div class="a"><b>Structured output</b>Ending every chat in identical JSON is what makes an LLM composable with routers, dashboards, and CRMs.</div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <h2>From lab exercise to deployable product</h2>
+  <p class="sec-sub">The assignment asked for a Chatbase bot. I shipped three implementations of the same prompt to understand the deployment trade-offs.</p>
+  <div class="pipe">
+    <div class="node"><b>01 · Chatbase</b>Hosted agent, instant public link — zero-ops demo for graders</div>
+    <span class="arrow">→</span>
+    <div class="node"><b>02 · HTML/JS prototype</b>Single-file front end for rapid conversation-design iteration</div>
+    <span class="arrow">→</span>
+    <div class="node"><b>03 · Node/Express + Anthropic API</b>GitHub repo; server-side proxy keeps the API key out of the browser</div>
+  </div>
+</section>
+
+<section class="wrap reveal">
+  <h2>Skills demonstrated</h2>
+  <div class="skill-tags">
+    <span class="hot">Prompt engineering</span>
+    <span class="hot">Conversation design</span>
+    <span>LLM guardrails &amp; safety triggers</span>
+    <span>Structured output (JSON)</span>
+    <span>Chatbase</span>
+    <span>Anthropic API</span>
+    <span>Node.js / Express</span>
+    <span>API-key security (server-side proxy)</span>
+    <span>State-machine thinking</span>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer>
+    <span>© 2026 Siri Anubolu · Artifact 02 · AIML-500</span>
+    <span>Prompt design is product design.</span>
+  </footer>
+</div>
+
+<script>
+  // reveal on scroll
+  const io = new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // ===== scripted simulation of the system-prompt state machine =====
+  const chat = document.getElementById('chat');
+  const inp = document.getElementById('inp');
+  const send = document.getElementById('send');
+  const quick = document.getElementById('quick');
+  const steps = [...document.querySelectorAll('.brain .step')];
+
+  const S = { issue:null, product:null, order:null, when:null, photo:null, safety:false, orderRetried:false };
+  let stage = 0; // 0 issue, 1 product, 2 order, 3 when, 4 photo, 5 done
+  const SAFETY_RX = /\b(rash|burn|burning|allerg\w*|itch\w*|swell\w*|breakout|hives|irritat\w*|reaction)\b/i;
+  const ORDER_RX = /\bGC-?\d{5}\b/i;
+
+  function setStep(n){
+    steps.forEach(s=>{
+      const i = +s.dataset.step;
+      s.classList.toggle('active', i===Math.min(n, 4));
+      s.classList.toggle('done', i < n);
+    });
+  }
+  function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+  function add(cls, html){
+    const m = document.createElement('div');
+    m.className = 'msg ' + cls;
+    m.innerHTML = html;
+    chat.appendChild(m);
+    chat.scrollTop = chat.scrollHeight;
+    return m;
+  }
+  function botSay(text, cb){
+    const t = add('bot typing','<i></i><i></i><i></i>');
+    setTimeout(()=>{ t.classList.remove('typing'); t.textContent = text; chat.scrollTop = chat.scrollHeight; if(cb) cb(); }, 650 + Math.random()*450);
+  }
+
+  function empathyFor(text){
+    if(SAFETY_RX.test(text)) return "I'm so sorry — a skin reaction is upsetting, and your comfort comes first. Please stop using the product for now; I'm flagging this as high priority for our Product Safety team.";
+    if(/leak|spill|broke|broken|shatter|damag/i.test(text)) return "Oh no — receiving a damaged product is really disappointing, and I'm sorry that happened.";
+    if(/wrong|different|shade|missing|didn'?t (arrive|come|get)/i.test(text)) return "I'm sorry about the mix-up — that's frustrating when you were expecting something specific.";
+    return "I'm really sorry you've had this experience — thank you for letting us know.";
+  }
+  function categoryFor(){
+    if(S.safety) return "Adverse Skin Reaction";
+    if(/leak|spill|broke|broken|shatter|damag/i.test(S.issue)) return "Damaged Product";
+    if(/wrong|different|shade/i.test(S.issue)) return "Wrong Item / Shade";
+    if(/late|delay|didn'?t (arrive|come)|missing|lost/i.test(S.issue)) return "Delivery Issue";
+    return "Product Quality";
+  }
+  function summaryCard(){
+    const cat = categoryFor();
+    const pr = S.safety ? "HIGH" : "MEDIUM";
+    const escl = S.safety ? "true → Product Safety team" : "false";
+    add('card',
+      '<div class="card-title">Structured complaint summary → routed to support</div>' +
+      '{\n' +
+      '  <span class="k">"category"</span>: <span class="v">"'+esc(cat)+'"</span>,\n' +
+      '  <span class="k">"product"</span>: <span class="v">"'+esc(S.product)+'"</span>,\n' +
+      '  <span class="k">"order_id"</span>: <span class="v">"'+esc(S.order)+'"</span>,\n' +
+      '  <span class="k">"description"</span>: <span class="v">"'+esc(S.issue)+'"</span>,\n' +
+      '  <span class="k">"reported_when"</span>: <span class="v">"'+esc(S.when)+'"</span>,\n' +
+      '  <span class="k">"photo_available"</span>: <span class="v">'+S.photo+'</span>,\n' +
+      '  <span class="k">"priority"</span>: <span class="flag">"'+pr+'"</span>,\n' +
+      '  <span class="k">"escalate"</span>: <span class="flag">'+escl+'</span>,\n' +
+      '  <span class="k">"sentiment"</span>: <span class="v">"negative"</span>\n' +
+      '}');
+  }
+
+  function handle(text){
+    if(stage===0){
+      S.issue = text;
+      S.safety = SAFETY_RX.test(text);
+      stage = 1; setStep(1);
+      botSay(empathyFor(text) + " To make sure the right team fixes this quickly, which product is this about? (Name — plus shade or size if it has one.)");
+    } else if(stage===1){
+      S.product = text;
+      stage = 2; setStep(2);
+      botSay("Got it — noted. Could you share your order number? It starts with GC- followed by five digits, e.g. GC-48210. You'll find it in your confirmation email.");
+    } else if(stage===2){
+      const m = text.match(ORDER_RX);
+      if(m){ S.order = m[0].toUpperCase().replace('GC','GC-').replace('--','-'); }
+      else if(!S.orderRetried){
+        S.orderRetried = true;
+        botSay("Hmm, that doesn't quite match our GC-XXXXX format — mind double-checking? If you can't find it, just say \"skip\" and we'll proceed without it.");
+        return;
+      } else { S.order = /skip/i.test(text) ? "not provided" : text; }
+      stage = 3; setStep(3);
+      botSay("Thank you. When did you first notice the issue — on delivery, or after some use?");
+    } else if(stage===3){
+      S.when = text;
+      stage = 4; setStep(4);
+      botSay("That helps a lot. One last thing — would you be able to share a photo of the product or packaging? A simple yes or no is fine; it's optional but speeds things up.");
+    } else if(stage===4){
+      S.photo = /\b(yes|yeah|sure|can|will|ok)\b/i.test(text) && !/\b(no|not|can'?t|nope)\b/i.test(text);
+      stage = 5; setStep(5);
+      botSay("Thank you so much for your patience, and again, I'm sorry this happened. I've logged everything below — a GlowCare specialist will follow up within 2 business days." + (S.safety ? " Because you mentioned a skin reaction, this is marked HIGH priority and escalated to our Product Safety team." : ""), ()=>{
+        setTimeout(summaryCard, 500);
+        setTimeout(()=>botSay("If anything else comes up, I'm here. Want to file another complaint? Just describe it and we'll start fresh."),1300);
+        // allow restart
+        setTimeout(()=>{ stage = 0; Object.keys(S).forEach(k=>S[k]= (k==='safety'||k==='orderRetried') ? false : null); setStep(0); }, 1600);
+      });
+    }
+  }
+
+  function submit(text){
+    text = (text||'').trim();
+    if(!text) return;
+    add('user', esc(text));
+    inp.value = '';
+    handle(text);
+  }
+  send.addEventListener('click', ()=>submit(inp.value));
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(inp.value); });
+  quick.addEventListener('click', e=>{ const b = e.target.closest('button'); if(b) submit(b.dataset.q); });
+
+  // opening message
+  setStep(0);
+  botSay("Hi, I'm the GlowCare Care Assistant 🌸 I'm sorry something's gone wrong with your order — I'm here to get every detail to the right team. What happened?");
+</script>
+</body>
+</html>
