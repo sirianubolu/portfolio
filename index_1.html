@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siri Anubolu — Business Analyst · Data Governance &amp; AI</title>
+<meta name="description" content="Portfolio and resume of Siri Anubolu — Business Analyst specializing in data governance, analytics, and applied AI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F4EE;
+    --ink:#14202E;
+    --ink-2:#1B2733;
+    --ink-soft:#4A5865;
+    --line:#D8D3C6;
+    --crimson:#B7284B;
+    --blue:#2456A6;
+    --green:#2E7D5B;
+    --purple:#6B4FA1;
+    --orange:#D96B1F;
+    --frost:#7FA8C9;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);color:var(--ink-2);
+    font-family:'IBM Plex Sans',system-ui,sans-serif;line-height:1.6;
+    background-image:linear-gradient(var(--line) 1px, transparent 1px),linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:48px 48px;background-attachment:fixed;
+  }
+  body::before{content:"";position:fixed;inset:0;background:var(--paper);opacity:.85;pointer-events:none;z-index:-1}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+  /* ============ NAV ============ */
+  nav{
+    position:sticky;top:0;z-index:50;background:var(--ink);color:var(--paper);
+    box-shadow:0 2px 0 var(--crimson);
+  }
+  .nav-inner{max-width:1080px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .nav-name{font-family:'IBM Plex Serif',serif;font-weight:700;font-size:1.05rem;margin-right:auto}
+  .nav-name b{color:var(--crimson)}
+  nav a{
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--paper);text-decoration:none;padding:6px 2px;border-bottom:2px solid transparent;
+  }
+  nav a:hover{border-bottom-color:var(--crimson)}
+  nav a.cta{border:1.5px solid var(--crimson);border-radius:999px;padding:7px 16px;background:var(--crimson)}
+  nav a.cta:hover{background:transparent}
+  nav a:focus-visible{outline:3px solid var(--frost);outline-offset:2px}
+
+  /* ============ HERO ============ */
+  .hero{background:var(--ink);color:var(--paper);padding:70px 0 0;position:relative;overflow:hidden}
+  .hero::after{ /* faint era spectrum strip at the bottom of the hero */
+    content:"";display:block;height:8px;margin-top:56px;
+    background:linear-gradient(90deg,#8C6A3F,var(--blue),var(--frost),var(--green),var(--purple),var(--orange),var(--crimson));
+  }
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:#9DB0C2}
+  .hero h1{
+    font-family:'IBM Plex Serif',serif;font-weight:700;line-height:1.02;
+    font-size:clamp(2.6rem,7vw,4.6rem);margin:.4rem 0 .9rem;
+  }
+  .hero h1 .accent{color:var(--crimson)}
+  .hero .tagline{max-width:60ch;color:#C4CFDA;font-size:1.08rem;margin-bottom:26px}
+  .hero .tagline b{color:var(--paper);font-weight:600}
+  .stats{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:30px}
+  .stat{
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.08em;
+    border:1.5px solid #3A4A5C;border-radius:999px;padding:7px 15px;color:#C4CFDA;
+  }
+  .stat b{color:var(--paper)}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{
+    font-family:'IBM Plex Mono',monospace;font-size:.8rem;letter-spacing:.04em;text-decoration:none;
+    border-radius:8px;padding:13px 24px;border:1.5px solid var(--crimson);
+    transition:transform .12s,box-shadow .12s;display:inline-block;
+  }
+  .btn-primary{background:var(--crimson);color:#fff}
+  .btn-ghost{color:var(--paper);border-color:#5A6B7D}
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 rgba(0,0,0,.35)}
+  .btn:focus-visible{outline:3px solid var(--frost);outline-offset:2px}
+
+  /* ============ LAYOUT GRID ============ */
+  .grid{display:grid;grid-template-columns:300px 1fr;gap:36px;padding:46px 0 20px}
+  @media (max-width:840px){.grid{grid-template-columns:1fr}}
+
+  /* ---------- sidebar ---------- */
+  aside .panel{background:var(--card);border:1.5px solid var(--ink-2);border-radius:14px;padding:20px 22px;margin-bottom:18px;box-shadow:5px 5px 0 rgba(20,32,46,.10)}
+  aside h3{font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--crimson);margin-bottom:12px}
+  .contact-list{list-style:none;display:grid;gap:8px}
+  .contact-list a{
+    font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--ink-2);text-decoration:none;
+    display:block;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;transition:border-color .15s,background .15s;
+  }
+  .contact-list a:hover{border-color:var(--crimson);background:#FBF4F5}
+  .tags{display:flex;flex-wrap:wrap;gap:7px}
+  .tag{
+    font-size:.76rem;border:1.5px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--paper);
+  }
+  .tag.hot{border-color:var(--crimson);color:var(--crimson);font-weight:500}
+  .cert-list{list-style:none;display:grid;gap:9px}
+  .cert-list li{display:flex;gap:10px;align-items:baseline;font-size:.86rem}
+  .cert-list li::before{content:"◆";color:var(--crimson);font-size:.7rem}
+  .edu{display:grid;gap:14px}
+  .edu .deg{font-weight:600;font-size:.9rem}
+  .edu .inst{font-size:.82rem;color:var(--ink-soft)}
+  .edu .yr{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-soft)}
+
+  /* ---------- main ---------- */
+  main h2{font-family:'IBM Plex Serif',serif;font-size:1.7rem;font-weight:700;margin-bottom:6px}
+  .sec-sub{color:var(--ink-soft);max-width:64ch;margin-bottom:28px;font-size:.95rem}
+
+  /* featured artifact strip */
+  .feature{
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    background:var(--card);border:1.5px solid var(--crimson);border-radius:14px;
+    padding:18px 22px;margin-bottom:42px;box-shadow:5px 5px 0 rgba(183,40,75,.15);
+  }
+  .feature .label{
+    font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;
+    color:#fff;background:var(--crimson);border-radius:999px;padding:5px 12px;white-space:nowrap;
+  }
+  .feature .txt{flex:1;min-width:220px}
+  .feature .txt b{font-family:'IBM Plex Serif',serif;font-size:1.06rem}
+  .feature .txt p{font-size:.86rem;color:var(--ink-soft)}
+  .feature a.btn{border-color:var(--crimson);color:var(--crimson);padding:10px 18px;background:transparent}
+  .feature a.btn:hover{background:var(--crimson);color:#fff}
+
+  /* career timeline — the signature */
+  .career{position:relative;margin:8px 0 30px;padding-left:34px}
+  .career::before{
+    content:"";position:absolute;left:9px;top:6px;bottom:6px;width:6px;border-radius:3px;
+    background:linear-gradient(180deg,var(--crimson),var(--orange),var(--purple),var(--green),var(--blue));
+  }
+  .job{position:relative;margin-bottom:34px}
+  .job::before{
+    content:"";position:absolute;left:-34px;top:8px;width:24px;height:24px;border-radius:50%;
+    background:var(--paper);border:5px solid var(--dot,var(--ink-2));
+  }
+  .job-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px 14px}
+  .job h3{font-family:'IBM Plex Serif',serif;font-size:1.18rem;font-weight:700}
+  .job .dates{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.06em;color:var(--ink-soft);white-space:nowrap}
+  .job .client{
+    font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--dot,var(--ink-soft));margin:2px 0 10px;
+  }
+  .job ul{list-style:none;display:grid;gap:7px;margin-bottom:10px}
+  .job li{font-size:.92rem;color:var(--ink-2);padding-left:16px;position:relative}
+  .job li::before{content:"—";position:absolute;left:0;color:var(--dot,var(--ink-soft))}
+  .job .tools{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--ink-soft);letter-spacing:.03em}
+  .job .tools b{color:var(--dot)}
+
+  footer{border-top:2px solid var(--ink-2);padding:24px 0 50px;margin-top:30px;
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--ink-soft);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    .btn:hover{transform:none;box-shadow:none}
+    .reveal{opacity:1;transform:none;transition:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <span class="nav-name">Siri Anubolu<b>.</b></span>
+    <a href="#experience">Experience</a>
+    <a href="Siri_Anubolu_Resume.pdf" download>Resume PDF</a>
+    <a href="glowcare.html">GlowCare Bot</a>
+    <a href="explain-nn.html">NN Explainer</a>
+    <a class="cta" href="timeline.html">AI Timeline →</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Business Analyst · Data Governance · Applied AI</p>
+    <h1>Siri Anubolu<span class="accent">.</span></h1>
+    <p class="tagline">
+      I turn <b>governed, trustworthy data</b> into decisions — and lately, into
+      <b>AI systems</b>. Five years of business analysis across insurance, healthcare,
+      HRTech, and AI-driven environments, now completing an M.S. in Data Analytics with AI.
+    </p>
+    <div class="stats">
+      <span class="stat"><b>5+</b> years experience</span>
+      <span class="stat"><b>4</b> industries</span>
+      <span class="stat"><b>5</b> certifications</span>
+      <span class="stat"><b>M.S.</b> Data Analytics with AI · in progress</span>
+    </div>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="timeline.html">Explore my AI timeline artifact →</a>
+      <a class="btn btn-ghost" href="Siri_Anubolu_Resume.pdf" download>Download resume (PDF)</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap grid">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside>
+    <div class="panel reveal">
+      <h3>Contact</h3>
+      <ul class="contact-list">
+        <li><a href="mailto:YOUR_EMAIL_HERE">✉ &nbsp;Email me</a></li>
+        <li><a href="YOUR_LINKEDIN_URL" target="_blank" rel="noopener">in &nbsp;LinkedIn</a></li>
+        <li><a href="YOUR_GITHUB_URL" target="_blank" rel="noopener">⌥ &nbsp;GitHub</a></li>
+        <li><a href="#">◎ &nbsp;Dallas, Texas</a></li>
+      </ul>
+    </div>
+
+    <div class="panel reveal" id="skills">
+      <h3>Core skills</h3>
+      <div class="tags">
+        <span class="tag hot">Data Governance</span>
+        <span class="tag hot">AI Agent Systems</span>
+        <span class="tag">Business Analysis</span>
+        <span class="tag">SOP &amp; Process Docs</span>
+        <span class="tag">Stakeholder Engagement</span>
+        <span class="tag">Risk Tracking</span>
+        <span class="tag">Power BI</span>
+        <span class="tag">Tableau</span>
+        <span class="tag">SQL</span>
+        <span class="tag">Snowflake</span>
+        <span class="tag">Python</span>
+        <span class="tag">Azure</span>
+        <span class="tag">ServiceNow</span>
+        <span class="tag">Jira</span>
+        <span class="tag">Confluence</span>
+        <span class="tag">Agile / Scrum</span>
+      </div>
+    </div>
+
+    <div class="panel reveal">
+      <h3>Certifications</h3>
+      <ul class="cert-list">
+        <li>Project Management Professional (PMP®)</li>
+        <li>Professional Scrum Master (PSM-I)</li>
+        <li>AWS Cloud Practitioner</li>
+        <li>Tableau Desktop Specialist</li>
+        <li>Databricks Generative AI Fundamentals</li>
+      </ul>
+    </div>
+
+    <div class="panel reveal">
+      <h3>Education</h3>
+      <div class="edu">
+        <div>
+          <div class="deg">M.S., Data Analytics with AI</div>
+          <div class="inst">Indiana Wesleyan University</div>
+          <div class="yr">In progress</div>
+        </div>
+        <div>
+          <div class="deg">M.S., IT &amp; Management</div>
+          <div class="inst">The University of Texas at Dallas · Dean's Excellence Scholarship</div>
+          <div class="yr">2023</div>
+        </div>
+        <div>
+          <div class="deg">B.Tech, Computer Science</div>
+          <div class="inst">GITAM University, Hyderabad</div>
+          <div class="yr">2021</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel reveal">
+      <h3>Languages</h3>
+      <div class="tags">
+        <span class="tag">English</span><span class="tag">Hindi</span><span class="tag">Telugu</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main>
+    <div class="feature reveal">
+      <span class="label">Artifact 01</span>
+      <div class="txt">
+        <b>From Turing to Transformers — an interactive history of AI.</b>
+        <p>An era-filterable timeline of the field, built to make 75 years of AI navigable for non-technical stakeholders in minutes. <em>Skills: AI research synthesis, data visualization, technical communication.</em></p>
+      </div>
+      <a class="btn" href="timeline.html">Open →</a>
+    </div>
+
+    <div class="feature reveal" style="border-color:var(--green);box-shadow:5px 5px 0 rgba(46,125,91,.15)">
+      <span class="label" style="background:var(--green)">Artifact 02</span>
+      <div class="txt">
+        <b>GlowCare Complaint Care Assistant — a prompt-engineered chatbot.</b>
+        <p>A working intake bot for a D2C cosmetics brand: one system prompt, live interactive demo, deployed via Chatbase and a key-safe Node/Express build. <em>Skills: prompt engineering, conversation design, LLM guardrails.</em></p>
+      </div>
+      <a class="btn" href="glowcare.html" style="border-color:var(--green);color:var(--green)">Open →</a>
+    </div>
+
+    <div class="feature reveal" style="border-color:var(--purple);box-shadow:5px 5px 0 rgba(107,79,161,.15)">
+      <span class="label" style="background:var(--purple)">Artifact 03</span>
+      <div class="txt">
+        <b>Guess. Check. Adjust. — explaining neural networks simply.</b>
+        <p>A plain-language explanation of how neural networks learn, written for non-technical audiences — with a live in-browser demo where a tiny model visibly trains itself from 11% to 100% accuracy. <em>Skills: AI communication, change leadership, interactive learning design.</em></p>
+      </div>
+      <a class="btn" href="explain-nn.html" style="border-color:var(--purple);color:var(--purple)">Open →</a>
+    </div>
+
+    <h2 id="experience">Experience</h2>
+    <p class="sec-sub">Five roles, one throughline: making complex operations legible — through documentation, dashboards, and now AI.</p>
+
+    <div class="career">
+
+      <div class="job reveal" style="--dot:var(--crimson)">
+        <div class="job-head">
+          <h3>Cyberspace Technologies</h3>
+          <span class="dates">Jan 2025 — Present</span>
+        </div>
+        <div class="client">Business Analyst · Client: Swiss Re Insurance</div>
+        <ul>
+          <li>Drive operational workflow modernization, governance reporting, and SLA process improvement for a global P&amp;C insurance environment.</li>
+          <li>Build Power BI dashboards tracking operational KPIs, SLA performance, and ticket metrics for leadership decision-making.</li>
+          <li>Streamlined cross-team workflows with operations, finance, and technical teams — cutting manual reconciliation effort by 30%.</li>
+          <li>Monitor incident management through ServiceNow and Azure reporting, contributing to 99% on-time ticket resolution.</li>
+        </ul>
+        <div class="tools"><b>Tools:</b> Power BI · SQL · Snowflake · ServiceNow · Azure · Python · Jira</div>
+      </div>
+
+      <div class="job reveal" style="--dot:var(--orange)">
+        <div class="job-head">
+          <h3>Vensiti Inc.</h3>
+          <span class="dates">Sep — Dec 2024</span>
+        </div>
+        <div class="client">Business Analyst · Client: Cigna Healthcare</div>
+        <ul>
+          <li>Maintained SOP documentation, operational workflows, and process flow diagrams for enterprise system implementation and governance.</li>
+          <li>Built metrics dashboards and executive presentations giving leadership visibility into project health and vendor deliverables.</li>
+          <li>Supported audit preparation, documentation management, and compliance tracking for enterprise operational programs.</li>
+        </ul>
+        <div class="tools"><b>Tools:</b> Power BI · MS Project · Azure DevOps · Dynamics · Excel (PowerPivot, VBA)</div>
+      </div>
+
+      <div class="job reveal" style="--dot:var(--purple)">
+        <div class="job-head">
+          <h3>ZONTAL</h3>
+          <span class="dates">Aug 2022 — Aug 2024</span>
+        </div>
+        <div class="client">Business Analyst · Scientific data platform (SaaS)</div>
+        <ul>
+          <li>Led change management across Product, Engineering, QA, and Client Success through full product lifecycles — discovery to post-go-live.</li>
+          <li>Designed SOPs for governance, UAT, release management, and defect handling — reducing implementation errors by 25%.</li>
+          <li>Improved on-time release delivery by 20% via milestone, risk, and dependency tracking dashboards.</li>
+          <li>Ensured GDPR and data-governance compliance by validating access controls and documenting audit-ready processes.</li>
+        </ul>
+        <div class="tools"><b>Tools:</b> Jira · Confluence · Monday.com · Power BI · Agile/Scrum</div>
+      </div>
+
+      <div class="job reveal" style="--dot:var(--green)">
+        <div class="job-head">
+          <h3>CPR</h3>
+          <span class="dates">Jan — May 2023</span>
+        </div>
+        <div class="client">Consultant · Conversational AI</div>
+        <ul>
+          <li>Led business and technical analysis for a virtual customer service chatbot and voice-to-text application in an Agile environment.</li>
+          <li>Reduced chatbot abandonment by 30% through gap analysis and user-behavior research on conversation flows.</li>
+          <li>Translated requirements into UML diagrams, use cases, and process models — improving requirement alignment by 35%.</li>
+        </ul>
+        <div class="tools"><b>Tools:</b> RASA X · Python · NLP · UML · Lucidchart · Visio</div>
+      </div>
+
+      <div class="job reveal" style="--dot:var(--blue)">
+        <div class="job-head">
+          <h3>Darwinbox</h3>
+          <span class="dates">Jul 2020 — Jul 2021</span>
+        </div>
+        <div class="client">Business Analyst · HRTech, Hyderabad</div>
+        <ul>
+          <li>Captured HR operations requirements through stakeholder interviews and workshops; maintained traceability matrices end-to-end.</li>
+          <li>Built Tableau dashboards analyzing ticketing trends, leave utilization, and HR service SLAs.</li>
+          <li>Managed centralized SharePoint documentation with version control and audit readiness.</li>
+        </ul>
+        <div class="tools"><b>Tools:</b> Tableau · SQL · Jira · SharePoint · Visio</div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="wrap">
+  <footer>
+    <span>© 2026 Siri Anubolu</span>
+    <span>Careers are timelines too — <a href="timeline.html" style="color:var(--crimson)">see the AI one →</a></span>
+  </footer>
+</div>
+
+
+<script>
+  // gentle scroll reveal
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
