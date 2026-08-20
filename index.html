@@ -33,7 +33,6 @@
   }
   body::before{content:"";position:fixed;inset:0;background:var(--paper);opacity:.85;pointer-events:none;z-index:-1}
   .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
-
   /* ============ NAV ============ */
   nav{
     position:sticky;top:0;z-index:50;background:var(--ink);color:var(--paper);
@@ -50,7 +49,6 @@
   nav a.cta{border:1.5px solid var(--crimson);border-radius:999px;padding:7px 16px;background:var(--crimson)}
   nav a.cta:hover{background:transparent}
   nav a:focus-visible{outline:3px solid var(--frost);outline-offset:2px}
-
   /* ============ HERO ============ */
   .hero{background:var(--ink);color:var(--paper);padding:70px 0 0;position:relative;overflow:hidden}
   .hero::after{ /* faint era spectrum strip at the bottom of the hero */
@@ -81,11 +79,9 @@
   .btn-ghost{color:var(--paper);border-color:#5A6B7D}
   .btn:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 rgba(0,0,0,.35)}
   .btn:focus-visible{outline:3px solid var(--frost);outline-offset:2px}
-
   /* ============ LAYOUT GRID ============ */
   .grid{display:grid;grid-template-columns:300px 1fr;gap:36px;padding:46px 0 20px}
   @media (max-width:840px){.grid{grid-template-columns:1fr}}
-
   /* ---------- sidebar ---------- */
   aside .panel{background:var(--card);border:1.5px solid var(--ink-2);border-radius:14px;padding:20px 22px;margin-bottom:18px;box-shadow:5px 5px 0 rgba(20,32,46,.10)}
   aside h3{font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--crimson);margin-bottom:12px}
@@ -107,11 +103,9 @@
   .edu .deg{font-weight:600;font-size:.9rem}
   .edu .inst{font-size:.82rem;color:var(--ink-soft)}
   .edu .yr{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-soft)}
-
   /* ---------- main ---------- */
   main h2{font-family:'IBM Plex Serif',serif;font-size:1.7rem;font-weight:700;margin-bottom:6px}
   .sec-sub{color:var(--ink-soft);max-width:64ch;margin-bottom:28px;font-size:.95rem}
-
   /* featured artifact strip */
   .feature{
     display:flex;align-items:center;gap:18px;flex-wrap:wrap;
@@ -127,7 +121,6 @@
   .feature .txt p{font-size:.86rem;color:var(--ink-soft)}
   .feature a.btn{border-color:var(--crimson);color:var(--crimson);padding:10px 18px;background:transparent}
   .feature a.btn:hover{background:var(--crimson);color:#fff}
-
   /* career timeline — the signature */
   .career{position:relative;margin:8px 0 30px;padding-left:34px}
   .career::before{
@@ -151,11 +144,9 @@
   .job li::before{content:"—";position:absolute;left:0;color:var(--dot,var(--ink-soft))}
   .job .tools{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--ink-soft);letter-spacing:.03em}
   .job .tools b{color:var(--dot)}
-
   footer{border-top:2px solid var(--ink-2);padding:24px 0 50px;margin-top:30px;
     font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--ink-soft);
     display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
-
   /* reveal on scroll */
   .reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
   .reveal.in{opacity:1;transform:none}
@@ -167,7 +158,6 @@
 </style>
 </head>
 <body>
-
 <nav>
   <div class="nav-inner">
     <span class="nav-name">Siri Anubolu<b>.</b></span>
@@ -175,13 +165,11 @@
     <a href="Siri_Anubolu_Resume.pdf" download>Resume PDF</a>
     <a href="glowcare.html">GlowCare Bot</a>
     <a href="explain-nn.html">NN Explainer</a>
-    <a href="explain-nn.html">NN Explainer</a>
     <a href="f1-analytics.html">F1 Analytics</a>
-    <a class="cta" href="timeline.html">AI Timeline →</a>
+    <a href="ethics-case-study.html">AI Ethics</a>
     <a class="cta" href="timeline.html">AI Timeline →</a>
   </div>
 </nav>
-
 <header class="hero">
   <div class="wrap">
     <p class="eyebrow">Business Analyst · Data Governance · Applied AI</p>
@@ -203,9 +191,7 @@
     </div>
   </div>
 </header>
-
 <div class="wrap grid">
-
   <!-- ============ SIDEBAR ============ -->
   <aside>
     <div class="panel reveal">
@@ -217,7 +203,6 @@
         <li><a href="#">◎ &nbsp;Dallas, Texas</a></li>
       </ul>
     </div>
-
     <div class="panel reveal" id="skills">
       <h3>Core skills</h3>
       <div class="tags">
@@ -239,7 +224,6 @@
         <span class="tag">Agile / Scrum</span>
       </div>
     </div>
-
     <div class="panel reveal">
       <h3>Certifications</h3>
       <ul class="cert-list">
@@ -250,7 +234,6 @@
         <li>Databricks Generative AI Fundamentals</li>
       </ul>
     </div>
-
     <div class="panel reveal">
       <h3>Education</h3>
       <div class="edu">
@@ -271,7 +254,6 @@
         </div>
       </div>
     </div>
-
     <div class="panel reveal">
       <h3>Languages</h3>
       <div class="tags">
@@ -279,7 +261,6 @@
       </div>
     </div>
   </aside>
-
   <!-- ============ MAIN ============ -->
   <main>
     <div class="feature reveal">
@@ -290,7 +271,6 @@
       </div>
       <a class="btn" href="timeline.html">Open →</a>
     </div>
-
     <div class="feature reveal" style="border-color:var(--green);box-shadow:5px 5px 0 rgba(46,125,91,.15)">
       <span class="label" style="background:var(--green)">Artifact 02</span>
       <div class="txt">
@@ -299,7 +279,6 @@
       </div>
       <a class="btn" href="glowcare.html" style="border-color:var(--green);color:var(--green)">Open →</a>
     </div>
-
     <div class="feature reveal" style="border-color:var(--purple);box-shadow:5px 5px 0 rgba(107,79,161,.15)">
       <span class="label" style="background:var(--purple)">Artifact 03</span>
       <div class="txt">
@@ -316,11 +295,17 @@
       </div>
       <a class="btn" href="f1-analytics.html" style="border-color:var(--orange);color:var(--orange)">Open →</a>
     </div>
+    <div class="feature reveal" style="border-color:var(--blue);box-shadow:5px 5px 0 rgba(36,86,166,.15)">
+      <span class="label" style="background:var(--blue)">Artifact 05</span>
+      <div class="txt">
+        <b>Algorithms and Accountability — an AI ethics case study.</b>
+        <p>A critical analysis of the 2019 Dutch childcare benefits scandal, where a self-learning fraud-detection algorithm led to a national government's resignation, examined through the lens of bias, transparency, and accountable AI governance. <em>Skills: AI ethics analysis, algorithmic bias evaluation, responsible AI governance.</em></p>
+      </div>
+      <a class="btn" href="ethics-case-study.html" style="border-color:var(--blue);color:var(--blue)">Open →</a>
+    </div>
     <h2 id="experience">Experience</h2>
     <p class="sec-sub">Five roles, one throughline: making complex operations legible — through documentation, dashboards, and now AI.</p>
-
     <div class="career">
-
       <div class="job reveal" style="--dot:var(--crimson)">
         <div class="job-head">
           <h3>Cyberspace Technologies</h3>
@@ -335,7 +320,6 @@
         </ul>
         <div class="tools"><b>Tools:</b> Power BI · SQL · Snowflake · ServiceNow · Azure · Python · Jira</div>
       </div>
-
       <div class="job reveal" style="--dot:var(--orange)">
         <div class="job-head">
           <h3>Vensiti Inc.</h3>
@@ -349,7 +333,6 @@
         </ul>
         <div class="tools"><b>Tools:</b> Power BI · MS Project · Azure DevOps · Dynamics · Excel (PowerPivot, VBA)</div>
       </div>
-
       <div class="job reveal" style="--dot:var(--purple)">
         <div class="job-head">
           <h3>ZONTAL</h3>
@@ -364,7 +347,6 @@
         </ul>
         <div class="tools"><b>Tools:</b> Jira · Confluence · Monday.com · Power BI · Agile/Scrum</div>
       </div>
-
       <div class="job reveal" style="--dot:var(--green)">
         <div class="job-head">
           <h3>CPR</h3>
@@ -378,7 +360,6 @@
         </ul>
         <div class="tools"><b>Tools:</b> RASA X · Python · NLP · UML · Lucidchart · Visio</div>
       </div>
-
       <div class="job reveal" style="--dot:var(--blue)">
         <div class="job-head">
           <h3>Darwinbox</h3>
@@ -392,19 +373,15 @@
         </ul>
         <div class="tools"><b>Tools:</b> Tableau · SQL · Jira · SharePoint · Visio</div>
       </div>
-
     </div>
   </main>
 </div>
-
 <div class="wrap">
   <footer>
     <span>© 2026 Siri Anubolu</span>
     <span>Careers are timelines too — <a href="timeline.html" style="color:var(--crimson)">see the AI one →</a></span>
   </footer>
 </div>
-
-
 <script>
   // gentle scroll reveal
   const io = new IntersectionObserver((entries)=>{
